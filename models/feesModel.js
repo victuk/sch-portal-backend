@@ -3,7 +3,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const feesSchema = new Schema({
-    electionUrl: String
+    studentID: {
+        type: Schema.Types.ObjectId, ref: 'Users',
+        required: true
+    },
+    amount: Number,
+    referenceID: String,
+    term: {
+        enum: ['first-term', 'second-term', 'third-term'],
+        required: true
+    },
+    year: String
 },
 { timestamps: true });
 

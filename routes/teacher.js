@@ -4,7 +4,7 @@ var router = express.Router();
 router.post('/register');
 router.put('/verify-email');
 router.post('/login');
-router.get('/');
+router.get('/announcements');
 
 router.get('/student/:id');
 router.post('/student-record/:id');

@@ -2,9 +2,10 @@ const User = require('../models/register');
 // const Blog = require('../models/Blogs');
 
 const theroles = {
-    voter: "voter",
-    admin: "swiftVoteAdmin",
-    schoolAdmin: "schoolAdmin"
+    student: "student",
+    parent: "parent",
+    admin: "admin",
+    teacher: "teacher"
 }
 
 // function hasAccess(req, res, next){
