@@ -2,12 +2,9 @@ var express = require('express');
 var router = express.Router();
 
 router.post('/register');
+router.put('/verify-email');
 router.post('/login');
 router.get('/');
-
-router.get('/payment-proofs');
-router.get('payment-proof/:id');
-router.post('verify-payments');
 
 router.get('/children');
 router.get('/child/:id');
