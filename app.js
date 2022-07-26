@@ -8,13 +8,30 @@ const cors = require('cors');
 
 var adminRouter = require('./routes/admin');
 var studentRouter = require('./routes/student');
-var parentRouter = require('./routes/parent');
+var announcementsRouter = require('./routes/announcements');
+var authRouter = require('./routes/auth');
+var teacherRouter = require('./routes/teacher');
+var paymentRouter = require('./routes/payment');
+
+
+
+
+var { transporter } = require('./utils/userUtil');
 
 var app = express();
 
 mongoose.connect(process.env.mongoConnection, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}, function(err) {
   if(err) {console.log(err)}
   else {console.log("Connected")}
+});
+
+// verify smtp connection configuration
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log('Email server is not connected.');
+  } else {
+    console.log("Server is ready to send e-mails.");
+  }
 });
 
 app.use(cors({
@@ -26,9 +43,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/v1/auth', authRouter);
 app.use('/v1/admin', adminRouter);
 app.use('/v1/student', studentRouter);
-app.use('/v1/parents', parentRouter);
+app.use('/v1/teacher', teacherRouter);
+app.use('/v1/payment', paymentRouter);
+app.use('/v1/announcements', announcementsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

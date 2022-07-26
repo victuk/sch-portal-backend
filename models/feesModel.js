@@ -10,8 +10,12 @@ const feesSchema = new Schema({
     amount: Number,
     referenceID: String,
     term: {
-        enum: ['first-term', 'second-term', 'third-term'],
-        required: true
+        type: String,
+        enum: ['first-term', 'second-term', 'third-term']
+    },
+    studentClass: {
+        type: String,
+        enum: ['js1', 'js2', 'js3', 'ss1', 'ss2', 'ss3']
     },
     year: String
 },

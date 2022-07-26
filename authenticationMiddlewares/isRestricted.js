@@ -9,7 +9,7 @@ function isRestricted(req, res, next) {
     else if (req.decodedUserDetails.suspended == true) {
         res.json({
             success: false,
-            message: "You have been suspended from voting."
+            message: "You have been suspended."
         });
     }
     else {
@@ -21,7 +21,5 @@ function isRestricted(req, res, next) {
         
     // });
 }
-
-
 
 module.exports = { isRestricted };

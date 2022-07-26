@@ -1,19 +1,28 @@
 var express = require('express');
 var router = express.Router();
 
-router.post('/register');
-router.put('/verify-email');
-router.post('/login');
-router.get('/announcements');
+const {
+    deleteRecord,
+    editRecord,
+    searchByName,
+    getStudentsResults,
+    specificStudentDetail
+} = require('../controllers/teacher/recordsController');
 
-router.get('/student/:id');
-router.post('/student-record/:id');
-router.put('/student-record/:id');
-router.delete('/student-record/:id');
+const { checkLoggedIn } = require('../authenticationMiddlewares/loginAuth');
+const { isRestricted } = require('../authenticationMiddlewares/isRestricted');
 
-router.get('/students-parent/:id');
-router.get('/parents');
-router.get('/parents/:id');
-router.post('/complaint/:id');
+const { hasAccess } = require('../authenticationMiddlewares/accessControl');
+
+router.use(checkLoggedIn);
+router.use(isRestricted);
+router.use(hasAccess.teacher);
+
+router.post('/student-class-record', getStudentsResults);
+router.get('/student/:id', specificStudentDetail);
+router.put('/student-record/:id', editRecord);
+router.delete('/student-record/:id', deleteRecord);
+
+router.get('/student/:firstName/:surName', searchByName);
 
 module.exports = router;

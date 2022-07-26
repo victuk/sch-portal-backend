@@ -6,7 +6,8 @@ require('dotenv').config();
 const jwtKey = process.env.secretkey;
 
 async function login(req, res) {
-    const {email, password} = req.body;
+    try {
+        const {email, password} = req.body;
 
     const u = await usersDB.findOne({email}, 'email role password');
 
@@ -17,7 +18,7 @@ async function login(req, res) {
     } else {
         const passwordsMatch = bcrypt.compareSync(password, u.password);
         if(passwordsMatch) {
-            const payload = {email: u.email, role: u.role};
+            const payload = {id: u._id, email: u.email, role: u.role};
             const accesstoken = jwt.sign(payload, jwtKey);
             res.status(200).json({
                 message: 'Login Successful',
@@ -30,4 +31,14 @@ async function login(req, res) {
             });
         }
     }
+    } catch (error) {
+        res.status(400).json({
+            message: 'An error occured.'
+        });
+    }
+    
 }
+
+module.exports = {
+    login
+};

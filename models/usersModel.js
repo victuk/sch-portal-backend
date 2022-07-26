@@ -10,12 +10,34 @@ const userSchema = new Schema({
     passportPicture: String,
     passportPublicId: String,
     dateOfBirth: Date,
+    studentClass: {
+        type: String,
+        enum: ['js1', 'js2', 'js3', 'ss1', 'ss2', 'ss3'],
+    },
     parentRole: String,
-    subjectsClass: Object,
+    parentName: String,
+    parentEmail: String,
+    newStudent: Boolean,
+    parentPhone: String,
+    subjectsClass: [
+        {
+            subjectName: String,
+            subjectCode: String,
+            subjectClass: String
+        }
+    ],
+    classTeacherOf: String,
     phoneNumber: String,
     stateOfOrigin: String,
     localGovernmentOfOrigin: String,
-    email: String,
+    email: {
+        type: String,
+        unique: true
+    },
+    category: {
+        type: String,
+        enum: ['general', 'science', 'arts', 'social-science']
+    },
     password: String,
     role: String,
     emailVerified: Boolean,

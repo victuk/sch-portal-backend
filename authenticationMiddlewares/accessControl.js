@@ -1,12 +1,11 @@
-const User = require('../models/register');
+// const User = require("../models/register");
 // const Blog = require('../models/Blogs');
 
 const theroles = {
-    student: "student",
-    parent: "parent",
-    admin: "admin",
-    teacher: "teacher"
-}
+  student: "student",
+  admin: "admin",
+  teacher: "teacher",
+};
 
 // function hasAccess(req, res, next){
 
@@ -27,56 +26,50 @@ const theroles = {
 //             }
 //         })
 
-
 // }
 
-
 const hasAccess = {
-    everyone (req, res, next) {
-        next();
-    },
-    schoolAdmins (req, res, next) {
-        if (req.decoded.role == theroles.schoolAdmin) {
-                next();
-            } else {
-                res.json({
-                    success: false,
-                    message: "Not Authorized. This route is only for schoadmins."
-                });
-            }
-    },
-    voters (req, res, next) {
-        if (req.decoded.role == theroles.voter) {
-                next();
-            } else {
-                res.json({
-                    success: false,
-                    message: "Not Authorized. This route is only for voters."
-                });
-            }
-    },
-    votersAndSchoolAdmins (req, res, next) {
-        if (req.decoded.role == theroles.voter || req.decoded.role == theroles.schoolAdmin) {
-                next();
-                
-            } else {
-                res.json({
-                    success: false,
-                    message: "Not Authorized. This route is only for voters and school admins."
-                });
-            }
-    },
-    swiftVoteAdmin (req, res, next) {
-        if (req.decoded.role == theroles.admin) {
-                next();
-            } else {
-                res.json({
-                    success: false,
-                    message: "Not Authorized. This route is only for swift vote admins."
-                });
-            }
+  admin(req, res, next) {
+    if (req.decoded.role == theroles.admin) {
+      next();
+    } else {
+      res.json({
+        success: false,
+        message: "Not Authorized. This route is only for schoadmins.",
+      });
     }
-}
+  },
+  parent(req, res, next) {
+    if (req.decoded.role == theroles.parent) {
+      next();
+    } else {
+      res.json({
+        success: false,
+        message: "Not Authorized. This route is only for voters.",
+      });
+    }
+  },
+  student(req, res, next) {
+    if (req.decoded.role == theroles.student) {
+      next();
+    } else {
+      res.json({
+        success: false,
+        message:
+          "Not Authorized. This route is only for voters and school admins.",
+      });
+    }
+  },
+  teacher(req, res, next) {
+    if (req.decoded.role == theroles.teacher) {
+      next();
+    } else {
+      res.json({
+        success: false,
+        message: "Not Authorized. This route is only for swift vote admins.",
+      });
+    }
+  },
+};
 
 module.exports = { hasAccess, theroles };
-

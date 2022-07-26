@@ -1,6 +1,6 @@
 const bcryptjs = require('bcryptjs');
 var nodemailer = require('nodemailer');
-const { registerAdmin } = require('../models/schoolElectionsModel/registerModel');
+const { usersDB } = require('../models/usersModel');
 require('dotenv').config();
 
 const { emailService, emailUser, emailPassword } = process.env;
@@ -16,14 +16,6 @@ var transporter = nodemailer.createTransport({
     }
   });
 
-// verify smtp connection configuration
-transporter.verify(function (error, success) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Server is ready to send e-mails");
-    }
-  });
 
   const createUserWithPassword = (newUser, callback) => {
     bcryptjs.genSalt(10, (err, salt) => {
@@ -49,12 +41,12 @@ const createUser = (newUser, callback) => {
 
 const getUserByEmail = (email, callback) => {
     const query = { email };
-    registerAdmin.findOne(query, callback);
+    usersDB.findOne(query, callback);
 };
 
 const getUserByUserId = (userId, callback) => {
     const query = { userId };
-    registerAdmin.findOne(query, callback);
+    usersDB.findOne(query, callback);
 };
 
 const comparePassword = (candidatePassword, hash, callback) => {
@@ -64,7 +56,7 @@ const comparePassword = (candidatePassword, hash, callback) => {
     });
 };
 
-const generateRandomString = (len = 24) => {
+const generateRandomHex = (len = 24) => {
     var crypto = require("crypto");
     var id = crypto.randomBytes(len).toString('hex');
     return id;
@@ -129,15 +121,37 @@ const e = (error) => {
   console.log("An error occured:", error);
 }
 
+function resultRemark(tScore) {
+  const totalScore = parseInt(tScore);
+  if(totalScore <= 80 && totalScore <= 100) {
+    return {grade: 'A+', remark: 'Brilliant'}
+  } else if ((totalScore >= 70 && totalScore <= 79)) {
+    return {grade: 'A', remark: 'Excellent'}
+  } else if ((totalScore >= 60 && totalScore <= 69)) {
+    return {grade: 'B', remark: 'Very Good'}
+  } else if ((totalScore >= 50 && totalScore <= 59)) {
+    return {grade: 'C', remark: 'Very Good'}
+  } else if ((totalScore >= 40 && totalScore <= 49)) {
+    return {grade: 'D', remark: 'Very Good'}
+  } else if ((totalScore >= 30 && totalScore <= 39)) {
+    return {grade: 'E', remark: 'Very Good'}
+  } else if ((totalScore <= 29)) {
+    return {grade: 'E', remark: 'Very Good'}
+  } else {
+    return {grade: 'None', remark: 'Invalid score'}
+  }
+}
+
 module.exports = {
   createUser,
   getUserByEmail,
   generateRandomFourDigits,
   getUserByUserId,
   comparePassword,
-  generateRandomString,
+  generateRandomHex,
   generateOtp,
   msToTime,
   msToTimePadded,
   transporter,
+  resultRemark,
   e };
