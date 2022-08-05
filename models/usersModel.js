@@ -30,6 +30,7 @@ const userSchema = new Schema({
     phoneNumber: String,
     stateOfOrigin: String,
     localGovernmentOfOrigin: String,
+    admitted: Boolean,
     email: {
         type: String,
         unique: true

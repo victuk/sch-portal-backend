@@ -1,9 +1,17 @@
 const { usersDB } = require('../../models/usersModel');
 const { transporter } = require('../../utils/userUtil');
 
+async function sendTheMail(options) {
+  try {
+    await transporter.sendMail(options);
+  } catch (error) {
+    console.log('An error occoured while trying to send the mail.');
+  }
+}
+
 async function emailEveryTeacher(req, res) {
     const {title, body} = req.body;
-    const users = usersDB.find({role: 'teacher'}, 'firstName surName otherNames email gender');
+    const users = await usersDB.find({role: 'teacher'}, 'firstName surName otherNames email gender');
 
     
     for(let u of users) {
@@ -30,7 +38,7 @@ async function emailEveryTeacher(req, res) {
                           `,
           };
       
-          transporter.sendMail(mailOptions);
+          sendTheMail(mailOptions);
     }
 
     res.status(200).json({
@@ -42,7 +50,8 @@ async function emailEveryTeacher(req, res) {
 async function emailEveryParent(req, res) {
     const { title, body } = req.body;
 
-    const users = usersDB.find({role: 'student'}, 'parentName parentEmail');
+    const users = await usersDB.find({role: 'student'}, 'parentName parentEmail');
+
 
     for(let u of users) {
         
@@ -67,7 +76,7 @@ async function emailEveryParent(req, res) {
                           `,
           };
       
-          transporter.sendMail(mailOptions);
+          sendTheMail(mailOptions);
     }
 
     res.status(200).json({
@@ -99,7 +108,7 @@ async function emailSpecificPeople(req, res) {
                       `,
       };
   
-      transporter.sendMail(mailOptions);
+      sendTheMail(mailOptions);
 
       res.status(200).json({
         message: `Emails sent to ${person} successfully`

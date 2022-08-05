@@ -123,20 +123,20 @@ const e = (error) => {
 
 function resultRemark(tScore) {
   const totalScore = parseInt(tScore);
-  if(totalScore <= 80 && totalScore <= 100) {
+  if(totalScore >= 80 && totalScore <= 100) {
     return {grade: 'A+', remark: 'Brilliant'}
   } else if ((totalScore >= 70 && totalScore <= 79)) {
     return {grade: 'A', remark: 'Excellent'}
   } else if ((totalScore >= 60 && totalScore <= 69)) {
     return {grade: 'B', remark: 'Very Good'}
   } else if ((totalScore >= 50 && totalScore <= 59)) {
-    return {grade: 'C', remark: 'Very Good'}
+    return {grade: 'C', remark: 'Fair'}
   } else if ((totalScore >= 40 && totalScore <= 49)) {
-    return {grade: 'D', remark: 'Very Good'}
+    return {grade: 'D', remark: 'Poor'}
   } else if ((totalScore >= 30 && totalScore <= 39)) {
-    return {grade: 'E', remark: 'Very Good'}
+    return {grade: 'E', remark: 'Very Poor'}
   } else if ((totalScore <= 29)) {
-    return {grade: 'E', remark: 'Very Good'}
+    return {grade: 'F', remark: 'Fail'}
   } else {
     return {grade: 'None', remark: 'Invalid score'}
   }

@@ -1,7 +1,16 @@
 const { usersDB } = require("../../models/usersModel");
 const {
-    generateRandomHex
+    generateRandomHex,
+    transporter
 } = require('../../utils/userUtil');
+
+async function sendTheMail(options) {
+  try {
+    await transporter.sendMail(options);
+  } catch (error) {
+    console.log('An error occoured while trying to send the mail.');
+  }
+}
 
 function sendEmail(req, res, email, vToken, pw) {
     var mailOptions = {
@@ -31,11 +40,8 @@ function sendEmail(req, res, email, vToken, pw) {
                     </div>
                     `,
     };
-    try {
-      transporter.sendMail(mailOptions);
-    } catch (error) {
-      console.log("Can't send emails.");
-    }
+      sendTheMail(mailOptions);
+
   }
 
 async function addTeacher(req, res) {
@@ -113,9 +119,9 @@ async function searchTeacherByEmail(req, res) {
 async function specificTeacher(req, res) {
   const { id: teacherID } = req.params;
 
-  const studentDetails = await usersDB.findById(teacherID, 'firstName surName otherNames gender passportPicture passportPublicId subjectsClass stateOfOrigin localGovernmentOfOrigin email role classTeacherOf createdAt updatedAt');
+  const teacherDetails = await usersDB.findById(teacherID, 'firstName surName otherNames gender passportPicture passportPublicId subjectsClass stateOfOrigin localGovernmentOfOrigin email role classTeacherOf createdAt updatedAt');
   res.json({
-    studentDetails
+    teacherDetails
   });
 }
 

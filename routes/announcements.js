@@ -12,7 +12,7 @@ router.get('/general', getGeneralAnnouncement);
 router.use(checkLoggedIn);
 router.use(isRestricted);
 
-router.get('/audience/:audienceType', specificAudienceAnnouncement);
+router.get('/specific-audience', specificAudienceAnnouncement);
 
 
 module.exports = router;

@@ -5,6 +5,14 @@ require("dotenv").config();
 const cryptojs = require("crypto-js");
 const cryptoKey = process.env.cryptoSecret;
 
+async function sendTheMail(options) {
+  try {
+    await transporter.sendMail(options);
+  } catch (error) {
+    console.log('An error occoured while trying to send the mail.');
+  }
+}
+
 function sendEmail(req, res, email, vToken) {
   var mailOptions = {
     from: "School <no-reply@school.com>",
@@ -27,7 +35,7 @@ function sendEmail(req, res, email, vToken) {
                   `,
   };
   try {
-    transporter.sendMail(mailOptions);
+    sendTheMail(mailOptions);
   } catch (error) {
     console.log("Can't send emails.");
   }
@@ -135,6 +143,7 @@ async function registerStudents(req, res) {
     req.body.suspended = false;
     req.body.emailVerified = false;
     req.body.newStudent = true;
+    req.body.admitted = false;
     req.body.role = "student";
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);

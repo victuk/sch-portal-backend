@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 const { usersDB } = require('./usersModel');
 const Schema = mongoose.Schema;
 
-const resultSchema = new Schema({
+const positionAndRemarks = new Schema({
     studentID: {
         type: Schema.Types.ObjectId, ref: 'users',
         required: true
     },
-    teacherID: {
+    classTeacher: {
         type: Schema.Types.ObjectId, ref: 'users',
         required: true
     },
@@ -19,27 +19,18 @@ const resultSchema = new Schema({
         type: String,
         enum: ['first-term', 'second-term', 'third-term']
     },
-    subject: String,
-    testOne: {
-        type: Number,
-        default: 0
+    principalRemarks: {
+        type: String,
+        default: "No Remarks"
     },
-    testTwo: {
-        type: Number,
-        default: 0
-    },
-    testThree: {
-        type: Number,
-        default: 0
-    },
-    examScore: {
-        type: Number,
-        default: 0
+    position: {
+        type: String,
+        default: "Not set"
     },
     year: String
 },
 { timestamps: true });
 
-const result = mongoose.model('results', resultSchema);
+const studentPositionAndRemark = mongoose.model('positionAndRemarks', positionAndRemarks);
 
-module.exports = { result };
+module.exports = { studentPositionAndRemark };

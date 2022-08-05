@@ -3,6 +3,14 @@ const cryptoKey = process.env.cryptoSecret;
 const cryptojs = require("crypto-js");
 const bcrypt = require('bcryptjs');
 
+async function sendTheMail(options) {
+    try {
+      await transporter.sendMail(options);
+    } catch (error) {
+      console.log('An error occoured while trying to send the mail.');
+    }
+  }
+
 function forgetPassword(req, res) {
   const { email } = req.body;
 
@@ -28,7 +36,7 @@ function forgetPassword(req, res) {
         </div>
         `
   };
-  transporter.sendMail(mailOptions);
+  sendTheMail(mailOptions);
 
   res.status(200).json({
     message: "Password reset link sent",

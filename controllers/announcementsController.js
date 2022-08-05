@@ -15,7 +15,7 @@ async function specificAudienceAnnouncement(req, res) {
 
     const ann = await announcementSch.find({audienceType: userRole});
 
-    req.json({
+    res.json({
         announcements: ann
     });
 }

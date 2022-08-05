@@ -17,7 +17,10 @@ const feesSchema = new Schema({
         type: String,
         enum: ['js1', 'js2', 'js3', 'ss1', 'ss2', 'ss3']
     },
-    year: String
+    year: String,
+    payDate: Date,
+    metaDetails: Object,
+    splitDetails: Object
 },
 { timestamps: true });
 

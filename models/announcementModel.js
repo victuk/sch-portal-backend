@@ -7,9 +7,11 @@ const announcementSchema = new Schema({
         type: Schema.Types.ObjectId, ref: 'Users',
         required: true
     },
-    announcment: String,
+    announcementTitle: String,
+    announcement: String,
     audienceType: {
-        enum: ['everyone', 'students', 'teachers'],
+        type: String,
+        enum: ['everyone', 'students', 'teachers', 'parents'],
     }
 },
 { timestamps: true });

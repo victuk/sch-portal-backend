@@ -9,6 +9,7 @@ const feesSelectorSchema = new Schema({
     },
     amount: Number,
     studentClass: {
+        type: String,
         enum: ['js1', 'js2', 'js3', 'ss1', 'ss2', 'ss3']
     }
 },
