@@ -7,7 +7,7 @@ const {
     registerAdmins
 } = require('../controllers/registerContoller');
 const { login } = require('../controllers/loginController');
-const { verifyEmail } = require('../controllers/verifyEmailController');
+const { verifyEmail, checkIfEmailAlreadyExist } = require('../controllers/verifyEmailController');
 const {
     forgetPassword,
     resetPassword
@@ -20,5 +20,6 @@ router.post('/login', login);
 router.put('/verify-email', verifyEmail);
 router.post('/forget-password', forgetPassword);
 router.put('/reset-password', resetPassword);
+router.post('/does-email-exist', checkIfEmailAlreadyExist);
 
 module.exports = router;

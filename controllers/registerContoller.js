@@ -1,6 +1,7 @@
 const { usersDB } = require("../models/usersModel");
+const { settings } = require("../models/settingsModel");
 const bcrypt = require("bcryptjs");
-const { transporter } = require("../utils/userUtil");
+const { transporter, generateRandomHex } = require("../utils/userUtil");
 require("dotenv").config();
 const cryptojs = require("crypto-js");
 const cryptoKey = process.env.cryptoSecret;
@@ -50,7 +51,6 @@ async function registerTeacher(req, res) {
     passportPicture,
     passportPublicId,
     email,
-    // dateOfBirth,
     stateOfOrigin,
     classTeacherOf,
     localGovernmentOfOrigin,
@@ -58,8 +58,6 @@ async function registerTeacher(req, res) {
     phoneNumber,
     password,
   } = req.body;
-
-  const regType = req.params;
 
   if (
     firstName &&
@@ -111,13 +109,13 @@ async function registerStudents(req, res) {
     parentEmail,
     parentPhone,
     studentClass,
-    // dateOfBirth &&
+    dateOfBirth,
     parentName,
     stateOfOrigin,
     category,
     localGovernmentOfOrigin,
     email,
-    password,
+    password
   } = req.body;
 
   if (
@@ -130,16 +128,16 @@ async function registerStudents(req, res) {
     parentEmail &&
     parentPhone &&
     studentClass &&
-    // dateOfBirth &&
+    dateOfBirth &&
     parentName &&
     stateOfOrigin &&
     localGovernmentOfOrigin &&
     category &&
     email &&
     password
-    // regType == "student"
   ) {
-    // req.body.dateOfBirth = Date.now();
+    try {
+      // const getAdmissionSetting = await settings.find();
     req.body.suspended = false;
     req.body.emailVerified = false;
     req.body.newStudent = true;
@@ -149,6 +147,16 @@ async function registerStudents(req, res) {
     const hashedPassword = bcrypt.hashSync(password, salt);
     req.body.password = hashedPassword;
     const vToken = cryptojs.AES.encrypt(email, cryptoKey).toString();
+    // const availableClasses = ["a", "b", "c"];
+    // const len = availableClasses.length + 1;
+    // req.body.classDivision = availableClasses[Math.floor(Math.random() * len)];
+    // req.body.admissionTerm = getAdmissionSetting[0].currentTerm;
+    // req.body.admissionYear = getAdmissionSetting[0].currentYear;
+    // const classCount = await usersDB.find({
+    //   studentClass, admissionYear: getAdmissionSetting[0].currentYear
+    // });
+
+    // req.body.admissionStr = `${generateRandomHex(4)}-${parseInt(classCount + 1)}`;
 
     const newUser = new usersDB(req.body);
     await newUser.save();
@@ -159,6 +167,20 @@ async function registerStudents(req, res) {
       message: "Student created.",
       vToken,
     });
+    } catch (error) {
+      console.log(error.name);
+      if(error.name == "MongoError") {
+        res.status(400).json({
+          message: "Email already registered."
+        });
+      } else {
+        res.status(400).json({
+          message: "An error occurred."
+        });
+      }
+    }
+  } else {
+    res.json({message: "Incomplete input"});
   }
 }
 

@@ -27,6 +27,9 @@ const userSchema = new Schema({
         }
     ],
     classTeacherOf: String,
+    admissionTerm: String,
+    admissionYear: String,
+    admissionStr: String,
     phoneNumber: String,
     stateOfOrigin: String,
     localGovernmentOfOrigin: String,

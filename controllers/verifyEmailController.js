@@ -26,6 +26,32 @@ async function verifyEmail(req, res) {
   }
 }
 
+async function checkIfEmailAlreadyExist(req, res) {
+  
+  const {email} = req.body;
+
+  try {
+    const emailCount = await usersDB.findOne({email}).count();
+
+  if(emailCount == 0) {
+    res.json({
+      message: "Student's email doesn't exist."
+    });
+  } else {
+    res.status(400).json({
+      message: "Student's email already exist."
+    });
+  }
+  } catch (error) {
+    res.status(400).json({
+      message: "An error occurred."
+    });
+  }
+
+  
+}
+
 module.exports = {
   verifyEmail,
+  checkIfEmailAlreadyExist
 };

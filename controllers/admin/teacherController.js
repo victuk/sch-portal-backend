@@ -125,6 +125,14 @@ async function specificTeacher(req, res) {
   });
 }
 
+async function getEveryTeacher(req, res) {
+  const searchResult = await usersDB.find({role: 'teacher'}, 'firstName surName otherNames gender passportPicture passportPublicId subjectsClass stateOfOrigin localGovernmentOfOrigin email role classTeacherOf createdAt updatedAt');
+
+  res.json({
+    searchResult
+  });
+}
+
 // async function changeTeacherDetails(req, res) {
 //   const {
 //       firstName,
@@ -182,5 +190,6 @@ module.exports = {
     addTeacher,
     searchTeacherByName,
     searchTeacherByEmail,
-    specificTeacher
+    specificTeacher,
+    getEveryTeacher
 };

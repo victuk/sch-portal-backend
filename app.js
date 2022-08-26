@@ -20,7 +20,7 @@ var { transporter } = require('./utils/userUtil');
 
 var app = express();
 
-mongoose.connect(process.env.mongoConnection, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false}, function(err) {
+mongoose.connect(process.env.mongoConnection, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true}, function(err) {
   if(err) {console.log(err)}
   else {console.log("Connected")}
 });

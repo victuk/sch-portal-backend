@@ -8,6 +8,8 @@ const {
     specificStudent
 } = require('../controllers/admin/studentsController');
 
+const { totalStudentsPerClass } = require("../controllers/admin/dashboardSummaryController");
+
 const {
     loadNewStudents,
     approveAdmission,
@@ -42,7 +44,8 @@ const {
     // addTeacher,
     searchTeacherByEmail,
     searchTeacherByName,
-    specificTeacher
+    specificTeacher,
+    getEveryTeacher
 } = require('../controllers/admin/teacherController');
 
 const { hasAccess } = require('../authenticationMiddlewares/accessControl');
@@ -63,6 +66,7 @@ router.get('/search-by-email/:email', searchByEmail);
 router.get('/search-teacher/:firstName/:surName', searchTeacherByName);
 router.get('/search-teacher-by-email/:email', searchTeacherByEmail);
 router.get('/teacher/:id', specificTeacher);
+router.get('/every-teacher', getEveryTeacher);
 
 // To test
 router.post('/email/parents', emailEveryParent);
@@ -93,5 +97,8 @@ router.delete("/admission-message/:id", hasAccess.admin, deleteAdmissionMessage)
 router.get("/setting/term-and-year", fetchSetting);
 router.post("/setting/term-and-year", hasAccess.admin, set);
 router.put("/setting/term-and-year/:id", hasAccess.admin, edit);
+
+
+router.get("/students-per-class", hasAccess.admin, totalStudentsPerClass);
 
 module.exports = router;

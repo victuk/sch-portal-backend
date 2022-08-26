@@ -100,7 +100,7 @@ async function editPosition(req, res) {
             term
         });
 
-        req.send(updatedRecord);
+        res.send(updatedRecord);
     }
 
 }
