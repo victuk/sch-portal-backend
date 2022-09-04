@@ -30,6 +30,7 @@ const userSchema = new Schema({
     admissionTerm: String,
     admissionYear: String,
     admissionStr: String,
+    admissionNumber: String,
     phoneNumber: String,
     stateOfOrigin: String,
     localGovernmentOfOrigin: String,

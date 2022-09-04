@@ -138,7 +138,7 @@ async function getSummary(req, res) {
 async function getStudentByEmail(req, res) {
     const {studentEmail} = req.body;
 
-    const student = await usersDB.findOne({email: studentEmail, role: "student"}, "firstName surName otherNames gender passportPicture passportPublicId parentEmail parentPhone studentClass newStudent parentName stateOfOrigin localGovernmentOfOrigin category email role createdAt updatedAt");
+    const student = await usersDB.findOne({$or: [{email: studentEmail}, {admissionNumber: studentEmail}], role: "student"}, "firstName surName otherNames gender passportPicture passportPublicId parentEmail parentPhone studentClass newStudent parentName stateOfOrigin localGovernmentOfOrigin category email role createdAt updatedAt");
 
     if(!student) {
         res.status(404).json({

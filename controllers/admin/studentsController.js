@@ -88,12 +88,12 @@ async function searchByName(req, res) {
 
   if(surName == "undefined") {
     searchResult = await usersDB.find(
-      { firstName: new RegExp(firstName, 'i'), role: "student" },
+      { firstName: new RegExp(firstName, 'i'), role: "student", admitted: true },
       "firstName surName otherNames gender passportPicture passportPublicId parentEmail parentPhone studentClass parentName stateOfOrigin localGovernmentOfOrigin category email role createdAt updatedAt"
     );
   } else {
     searchResult = await usersDB.find(
-      { firstName: new RegExp(firstName, 'i'), surName: new RegExp(surName, 'i'), role: "student" },
+      { firstName: new RegExp(firstName, 'i'), surName: new RegExp(surName, 'i'), role: "student", admitted: true },
       "firstName surName otherNames gender passportPicture passportPublicId parentEmail parentPhone studentClass parentName stateOfOrigin localGovernmentOfOrigin category email role createdAt updatedAt"
     );
   }
@@ -103,11 +103,11 @@ async function searchByName(req, res) {
   });
 }
 
-async function searchByEmail(req, res) {
-  const { email } = req.params;
-
+async function searchByEmailOrRegNumber(req, res) {
+  const { emailOrRegNumber } = req.params;
+  console.log(emailOrRegNumber);
   const searchResult = await usersDB.find(
-    { email, role: "student" },
+    { $or: [{email: emailOrRegNumber}, {admissionNumber: emailOrRegNumber}], role: "student", admitted: true },
     "firstName surName otherNames gender passportPicture passportPublicId parentEmail parentPhone studentClass parentName stateOfOrigin localGovernmentOfOrigin category email role createdAt updatedAt"
   );
 
@@ -166,7 +166,7 @@ module.exports = {
   showStudents,
   specificStudent,
   searchByName,
-  searchByEmail,
+  searchByEmailOrRegNumber,
   getStudentReceipts,
   getFeeReceiptById,
   editReceipt,

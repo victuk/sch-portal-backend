@@ -137,7 +137,7 @@ async function registerStudents(req, res) {
     password
   ) {
     try {
-      // const getAdmissionSetting = await settings.find();
+      const getAdmissionSetting = await settings.find();
     req.body.suspended = false;
     req.body.emailVerified = false;
     req.body.newStudent = true;
@@ -146,17 +146,33 @@ async function registerStudents(req, res) {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
     req.body.password = hashedPassword;
-    const vToken = cryptojs.AES.encrypt(email, cryptoKey).toString();
-    // const availableClasses = ["a", "b", "c"];
-    // const len = availableClasses.length + 1;
-    // req.body.classDivision = availableClasses[Math.floor(Math.random() * len)];
-    // req.body.admissionTerm = getAdmissionSetting[0].currentTerm;
-    // req.body.admissionYear = getAdmissionSetting[0].currentYear;
-    // const classCount = await usersDB.find({
-    //   studentClass, admissionYear: getAdmissionSetting[0].currentYear
-    // });
 
-    // req.body.admissionStr = `${generateRandomHex(4)}-${parseInt(classCount + 1)}`;
+    const vToken = cryptojs.AES.encrypt(email, cryptoKey).toString();
+    const availableClasses = ["a", "b", "c"];
+    const len = availableClasses.length + 1;
+    req.body.classDivision = availableClasses[Math.floor(Math.random() * len)];
+    req.body.admissionTerm = getAdmissionSetting[0].currentTerm;
+    req.body.admissionYear = getAdmissionSetting[0].currentYear;
+    let classCount = await usersDB.find({
+      studentClass, admissionYear: getAdmissionSetting[0].currentYear
+    }).countDocuments();
+
+    
+    
+    let alreadyExists = true;
+    let mainCount = parseInt(classCount);
+    
+    while(alreadyExists == true) {
+      let admissionStr = `${getAdmissionSetting[0].currentYear.split("/")[0]}${req.body.studentClass.includes("j") ? "j" : "s"}${parseInt(mainCount + 1)}`;
+      let usersWithAdmissionNumber = await usersDB.find({admissionNumber: admissionStr}).countDocuments();
+      
+      if(usersWithAdmissionNumber == 0) {
+        alreadyExists = false;
+        req.body.admissionNumber = admissionStr;
+      } else {
+        mainCount++;
+      }
+    }
 
     const newUser = new usersDB(req.body);
     await newUser.save();
@@ -170,6 +186,7 @@ async function registerStudents(req, res) {
     } catch (error) {
       console.log(error.name);
       if(error.name == "MongoError") {
+        console.log(error);
         res.status(400).json({
           message: "Email already registered."
         });

@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const {
     changeDetails,
-    searchByEmail,
+    searchByEmailOrRegNumber,
     searchByName,
     showStudents,
     specificStudent
@@ -48,11 +48,17 @@ const {
     getEveryTeacher
 } = require('../controllers/admin/teacherController');
 
+const {
+    feeDriveByEmail,
+    feeDriveByClass
+} = require("../controllers/admin/feeDriveController");
+
 const { hasAccess } = require('../authenticationMiddlewares/accessControl');
 
 const { checkLoggedIn } = require('../authenticationMiddlewares/loginAuth');
 const { isRestricted } = require('../authenticationMiddlewares/isRestricted');
 
+router.get("/setting/term-and-year", fetchSetting);
 
 router.use(checkLoggedIn);
 router.use(isRestricted);
@@ -61,7 +67,7 @@ router.get('/students', showStudents);
 router.get('/student/:id', specificStudent);
 router.put('/student/:id', changeDetails);
 router.get('/search-student/:firstName/:surName', searchByName);
-router.get('/search-by-email/:email', searchByEmail);
+router.get('/search-by-email-or-reg-number/:emailOrRegNumber', searchByEmailOrRegNumber);
 
 router.get('/search-teacher/:firstName/:surName', searchTeacherByName);
 router.get('/search-teacher-by-email/:email', searchTeacherByEmail);
@@ -94,11 +100,14 @@ router.post("/admission-message", hasAccess.admin, setAdmissionMessage);
 router.put("/admission-message/:id", hasAccess.admin, editAdmissionMessage);
 router.delete("/admission-message/:id", hasAccess.admin, deleteAdmissionMessage);
 
-router.get("/setting/term-and-year", fetchSetting);
+
 router.post("/setting/term-and-year", hasAccess.admin, set);
 router.put("/setting/term-and-year/:id", hasAccess.admin, edit);
 
 
 router.get("/students-per-class", hasAccess.admin, totalStudentsPerClass);
+
+router.get("/class-feedrive/:studentClass", feeDriveByClass);
+router.get("/student-feedrive/:emailOrRegNo/:studentClass", feeDriveByEmail);
 
 module.exports = router;
