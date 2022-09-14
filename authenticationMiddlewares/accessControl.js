@@ -5,6 +5,7 @@ const theroles = {
   student: "student",
   admin: "admin",
   teacher: "teacher",
+  recordkeeper: "recordkeeper"
 };
 
 // function hasAccess(req, res, next){

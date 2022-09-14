@@ -12,7 +12,7 @@ var announcementsRouter = require('./routes/announcements');
 var authRouter = require('./routes/auth');
 var teacherRouter = require('./routes/teacher');
 var paymentRouter = require('./routes/payment');
-
+var recordsRouter = require('./routes/recordKeeper');
 
 
 
@@ -49,6 +49,7 @@ app.use('/v1/student', studentRouter);
 app.use('/v1/teacher', teacherRouter);
 app.use('/v1/payment', paymentRouter);
 app.use('/v1/announcements', announcementsRouter);
+app.use('/v1/records', recordsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

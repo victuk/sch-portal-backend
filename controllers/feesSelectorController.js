@@ -98,8 +98,6 @@ async function forParents(req, res) {
     } = req.body;
     const {id: studentID} = req.params;
 
-    
-
     const {newStudent} = await usersDB.findOne({_id:studentID, role: 'student'}, 'newStudent');
 
 

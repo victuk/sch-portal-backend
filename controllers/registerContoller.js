@@ -56,7 +56,7 @@ async function registerTeacher(req, res) {
     localGovernmentOfOrigin,
     subjectsClass,
     phoneNumber,
-    password,
+    password
   } = req.body;
 
   if (
@@ -74,7 +74,9 @@ async function registerTeacher(req, res) {
     email &&
     password
   ) {
-    req.body.role = "teacher";
+
+    try {
+      req.body.role = "teacher";
     req.body.suspended = false;
     req.body.emailVerified = false;
     const salt = bcrypt.genSaltSync(10);
@@ -90,6 +92,18 @@ async function registerTeacher(req, res) {
       message: "teacher created.",
       vToken,
     });
+    } catch (error) {
+      if(error.name == "MongoError") {
+        console.log(error);
+        res.status(400).json({
+          message: "Email already registered."
+        });
+      } else {
+        res.status(400).json({
+          message: "An error occurred."
+        });
+      }
+    }
   } else {
     console.log(req.body);
     res.status(400).json({
@@ -241,8 +255,44 @@ async function registerAdmins(req, res) {
   }
 }
 
+async function registerScoresUploader(req, res) {
+  const {
+    firstName,
+    surName,
+    otherNames,
+    email,
+    password
+  } = req.body;
+
+  if(firstName &&
+    surName &&
+    otherNames &&
+    email &&
+    password) {
+
+    req.body.role = "recordkeeper";
+    req.body.suspended = false;
+    req.body.emailVerified = true;
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password.toString(), salt);
+    req.body.password = hashedPassword;
+    const newUser = new usersDB(req.body);
+    await newUser.save();
+
+    res.status(201).json({
+      message: "New record keeper created.",
+      vToken,
+    });
+
+  } else {
+    res.json({message: "Incomplete details"});
+  }
+
+}
+
 module.exports = {
   registerTeacher,
   registerStudents,
   registerAdmins,
+  registerScoresUploader
 };
