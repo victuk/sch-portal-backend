@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const announcementSchema = new Schema({
     postedBy: {
-        type: Schema.Types.ObjectId, ref: 'Users',
+        type: Schema.Types.ObjectId, ref: 'users',
         required: true
     },
     announcementTitle: String,

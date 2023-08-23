@@ -4,8 +4,12 @@ var router = express.Router();
 const {
     registerStudents,
     registerTeacher,
-    registerAdmins
+    registerAdmins,
+    registerScoresUploader,
 } = require('../controllers/registerContoller');
+
+const { changeRecordKeeperDetails } = require("../controllers/recordkeeper/recordsController");
+
 const { login } = require('../controllers/loginController');
 const { verifyEmail, checkIfEmailAlreadyExist } = require('../controllers/verifyEmailController');
 const {
@@ -13,6 +17,8 @@ const {
     resetPassword
 } = require('../controllers/forgotPasswordController');
 
+router.post('/register/recordkeeper', registerScoresUploader);
+router.post('/changedetails', changeRecordKeeperDetails);
 router.post('/register/student', registerStudents);
 router.post('/register/teacher', registerTeacher);
 router.post('/register/admin', registerAdmins);

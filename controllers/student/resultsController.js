@@ -6,7 +6,8 @@ async function getResult(req, res) {
   const { year, term, studentClass } = req.body;
   const { id: studentID } = req.decoded;
 
-  console.log("hello");
+  console.log(req.body);
+  console.log(studentID);
 
   let studentR = [];
 

@@ -34,9 +34,9 @@ const hasAccess = {
     if (req.decoded.role == theroles.admin) {
       next();
     } else {
-      res.json({
+      res.status(401).json({
         success: false,
-        message: "Not Authorized. This route is only for schoadmins.",
+        message: "Not Authorized.",
       });
     }
   },
@@ -44,9 +44,9 @@ const hasAccess = {
     if (req.decoded.role == theroles.parent) {
       next();
     } else {
-      res.json({
+      res.status(401).json({
         success: false,
-        message: "Not Authorized. This route is only for voters.",
+        message: "Not Authorized.",
       });
     }
   },
@@ -54,23 +54,34 @@ const hasAccess = {
     if (req.decoded.role == theroles.student) {
       next();
     } else {
-      res.json({
+      res.status(401).json({
         success: false,
         message:
-          "Not Authorized. This route is only for voters and school admins.",
+          "Not Authorized.",
       });
     }
   },
   teacher(req, res, next) {
+    console.log(req.decoded);
     if (req.decoded.role == theroles.teacher) {
       next();
     } else {
-      res.json({
+      res.status(401).json({
         success: false,
-        message: "Not Authorized. This route is only for swift vote admins.",
+        message: "Not Authorized.",
       });
     }
   },
+  teacher(req, res, next) {
+    if (req.decoded.role == theroles.recordkeeper) {
+      next();
+    } else {
+      res.status(401).json({
+        success: false,
+        message: "Not Authorized.",
+      });
+    }
+  }
 };
 
 module.exports = { hasAccess, theroles };

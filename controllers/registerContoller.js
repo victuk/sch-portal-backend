@@ -276,16 +276,24 @@ async function registerScoresUploader(req, res) {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password.toString(), salt);
     req.body.password = hashedPassword;
-    const newUser = new usersDB(req.body);
-    await newUser.save();
-
-    res.status(201).json({
-      message: "New record keeper created.",
-      vToken,
-    });
-
+    try {
+      await usersDB.create(req.body);
+      res.status(201).json({
+        message: "New record keeper created."
+      });
+    } catch (error) {
+      if (error.name == "MongoError") {
+        res.status(400).json({
+          message: "User already exist."
+        });
+      } else {
+        res.status(500).json({
+          message: "A server error occurred"
+        });
+      }
+    }
   } else {
-    res.json({message: "Incomplete details"});
+    res.status(400).json({message: "Incomplete details"});
   }
 
 }

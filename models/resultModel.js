@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { usersDB } = require('./usersModel');
 const Schema = mongoose.Schema;
 
 const resultSchema = new Schema({
@@ -33,6 +32,10 @@ const resultSchema = new Schema({
         default: 0
     },
     examScore: {
+        type: Number,
+        default: 0
+    },
+    testsAndExamTotal: {
         type: Number,
         default: 0
     },

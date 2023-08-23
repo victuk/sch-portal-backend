@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { usersDB } = require('./usersModel');
 const Schema = mongoose.Schema;
 
 const positionAndRemarks = new Schema({
@@ -26,6 +25,18 @@ const positionAndRemarks = new Schema({
     position: {
         type: String,
         default: "Not set"
+    },
+    studentAverage: {
+        type: Number,
+        default: 0
+    },
+    totalSubjectScores: {
+        type: Number,
+        default: 0
+    },
+    numberOfSubjectsOffered: {
+        type: Number,
+        default: 0
     },
     year: String
 },

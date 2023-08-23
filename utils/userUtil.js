@@ -1,6 +1,8 @@
 const bcryptjs = require('bcryptjs');
 var nodemailer = require('nodemailer');
 const { usersDB } = require('../models/usersModel');
+const { result } = require('../models/resultModel');
+const { studentPositionAndRemark } = require('../models/positionAndRemarksModel');
 require('dotenv').config();
 
 const { emailService, emailUser, emailPassword } = process.env;
@@ -138,8 +140,105 @@ function resultRemark(tScore) {
   } else if ((totalScore <= 29)) {
     return {grade: 'F', remark: 'Fail'}
   } else {
-    return {grade: 'None', remark: 'Invalid score'}
+    return {grade: 'None', remark: 'No score'}
   }
+}
+
+async function calculateStudentAverage(val) {
+  const {studentID, studentClass, term, year, testsAndExamTotal} = val;
+  const allStudentInClass = await result.find({
+    studentID,
+    studentClass,
+    year,
+    term,
+  }, "subject testsAndExamTotal");
+
+  let total = 0;
+
+  let subjectCount = allStudentInClass.length;
+  
+  console.log(allStudentInClass);
+  
+  for(let i = 0; i < allStudentInClass.length; i++) {
+    total += allStudentInClass[i].testsAndExamTotal;
+  }
+
+  console.log("T", testsAndExamTotal);
+  console.log("SC", subjectCount);
+
+  const studentClassAverage = testsAndExamTotal / subjectCount;
+
+
+  return studentClassAverage;
+
+  // const createOrUpdatePosition = await studentPositionAndRemark.findOne({
+  //   studentID,
+  //   studentClass,
+  //   year,
+  //   term,
+  // });
+
+  // let neededPositionAndRemarks;
+
+  // if(!createOrUpdatePosition) {
+  //   neededPositionAndRemarks = await studentPositionAndRemark.create({
+  //     studentID,
+  //     studentClass,
+  //     classTeacher,
+  //     year,
+  //     term,
+  //     studentAverage: studentClassAverage
+  //   });
+  // } else {
+  //   neededPositionAndRemarks = await studentPositionAndRemark.findOneAndUpdate({
+  //     studentID,
+  //     studentClass,
+  //     classTeacher,
+  //     year,
+  //     term,
+  //     studentAverage: studentClassAverage
+  //   }, {new: true});
+  // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // const studentPosition = await studentPositionAndRemark.find({
+  //   studentID,
+  //   studentClass,
+  //   year,
+  //   term,
+  // }).sort({
+  //   studentAverage: "asc"
+  // });
+
+  // let position;
+
+  // console.log(studentPosition);
+
+  // for(let j=0; j < studentPosition.length; j++) {
+  //   if(studentPosition.studentID == studentID) {
+  //     position = j + 1;
+  //   }
+  // }
+
+
+  // return neededPositionAndRemarks;
+
 }
 
 module.exports = {
@@ -154,4 +253,5 @@ module.exports = {
   msToTimePadded,
   transporter,
   resultRemark,
+  calculateStudentAverage,
   e };

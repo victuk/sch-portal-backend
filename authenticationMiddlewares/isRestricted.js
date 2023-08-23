@@ -1,5 +1,4 @@
 function isRestricted(req, res, next) {
-
     if (req.decodedUserDetails.emailVerified == false) {
         res.json({
             success: false,

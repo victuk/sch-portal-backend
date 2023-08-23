@@ -15,7 +15,8 @@ const {
 
 const {
     getStudentsPosition,
-    editPosition
+    editPosition,
+    refreshStudentsResult
 } = require("../controllers/teacher/studentPositionController");
 
 const { checkLoggedIn } = require('../authenticationMiddlewares/loginAuth');
@@ -25,7 +26,7 @@ const { hasAccess } = require('../authenticationMiddlewares/accessControl');
 
 router.use(checkLoggedIn);
 router.use(isRestricted);
-router.use(hasAccess.teacher);
+// router.use(hasAccess.teacher);
 
 router.get('/profile', getTeacherProfile);
 
@@ -38,5 +39,6 @@ router.get('/student/:firstName/:surName', searchByName);
 
 router.get("/student-positions", getStudentsPosition);
 router.post("/edit-student-position", editPosition);
+router.get("/refresh-student-position", refreshStudentsResult);
 
 module.exports = router;

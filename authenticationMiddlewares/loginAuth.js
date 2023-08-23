@@ -5,7 +5,6 @@ let secret = process.env.secretkey;
 
 function checkLoggedIn(req, res, next){
     const token = req.headers.accesstoken;
-    
     if(token){
         const tok = token.split(' ');
         const authType = tok[0];
@@ -19,6 +18,7 @@ function checkLoggedIn(req, res, next){
                     return res.json({ success: false, message: 'Failed to authenticate token.' });
                 } else {
                     req.decoded = decoded;
+
                     usersDB.findById(decoded.id, 'email emailVerified suspended role admitted', (err, user) => {
                         
                         if (err) {

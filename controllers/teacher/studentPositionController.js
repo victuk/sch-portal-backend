@@ -1,5 +1,6 @@
 const { usersDB } = require("../../models/usersModel");
 const { studentPositionAndRemark } = require("../../models/positionAndRemarksModel");
+const { result } = require("../../models/resultModel");
 
 async function getStudentsPosition(req, res) {
     const { year, term } = req.headers;
@@ -105,7 +106,115 @@ async function editPosition(req, res) {
 
 }
 
+async function refreshStudentsResult(req, res) {
+    const { id: teacherID } = req.decoded;
+    const { year, term } = req.headers;
+
+    let studentsResult = [];
+
+    const teacherClass = await usersDB.findOne({
+        _id: teacherID, role: "teacher"
+    });
+  
+    let classStudents = await usersDB.find({
+      studentClass: teacherClass.classTeacherOf,
+    });
+
+    let position = 1;
+
+    for(let student of classStudents) {
+        // let positionResponse = await studentPositionAndRemark.findOne({
+        //     studentID: student._id,
+        //     year,
+        //     studentClass: teacherClass.classTeacherOf,
+        //     term
+        // });
+
+        let studentGrandTotal = 0;
+        let studentGrandAverage = 0;
+
+        const studentSubjects = await result.find({
+            studentID: student._id,
+            studentClass: teacherClass.classTeacherOf,
+            term, year
+        });
+
+        let studentsTotalSubjects = studentSubjects.length;
+
+        // console.log(studentsTotalSubjects);
+
+        for(let i = 0; i < studentSubjects.length; i++) {
+            studentGrandTotal += studentSubjects[i].testsAndExamTotal;
+        }
+
+        studentGrandAverage = studentGrandTotal/studentsTotalSubjects;
+
+        studentsResult.push({
+            student,
+            studentGrandTotal,
+            studentGrandAverage: studentsTotalSubjects != 0 ? studentGrandAverage : 0,
+            studentsTotalSubjects
+        });
+
+    }
+
+    studentsResult = studentsResult.filter((result) => {
+        return result.studentGrandAverage != 0 && result.studentGrandTotal != 0 && result.studentsTotalSubjects != 0;
+    });
+
+    studentsResult.sort(function(a, b) {
+        return b.studentGrandAverage - a.studentGrandAverage;
+    });
+
+    for(let i = 1; i < studentsResult.length; i++) {
+        if(studentsResult[i].studentGrandAverage == studentsResult[i - 1].studentGrandAverage) {
+            studentsResult[i - 1].position = position;
+        } else {
+            studentsResult[i - 1].position = position;
+            position++;
+        }
+
+        if(i == studentsResult.length - 1) {
+            if(studentsResult[i].studentGrandAverage == studentsResult[i - 1].studentGrandAverage) {
+                studentsResult[i].position = position;
+            } else {
+                studentsResult[i].position = position;
+            }
+        }
+
+    }
+
+    for(let i = 0; i < studentsResult.length; i++) {
+        await studentPositionAndRemark.findOneAndUpdate({
+            studentID: studentsResult[i].student._id,
+            studentClass: teacherClass.classTeacherOf,
+            term, year
+        },
+            {
+                position:  studentsResult[i].position,
+                studentAverage: studentsResult[i].studentGrandAverage,
+                classTeacher: teacherClass._id,
+                numberOfSubjectsOffered: studentsResult[i].studentsTotalSubjects,
+                totalSubjectScores: studentsResult[i].studentGrandTotal
+            },
+        {
+            upsert: true,
+            setDefaultsOnInsert: true
+        });
+    }
+
+    const allResult = await studentPositionAndRemark.find({
+        studentClass: teacherClass.classTeacherOf,
+            term, year
+    }).pop;
+
+    console.log(allResult);
+    res.send(allResult);
+
+}
+
 module.exports = {
     getStudentsPosition,
-    editPosition
+    editPosition,
+    refreshStudentsResult
 };

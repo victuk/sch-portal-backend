@@ -9,7 +9,7 @@ async function totalStudentsPerClass(req, res) {
         summary[theCount] = await usersDB.find({studentClass: `js${i}`, role: "student", admitted: true}).count();
     }
 
-    for(i = 1; i <=3; i++) {
+    for(i = 1; i <= 3; i++) {
         const theCount = `ss${i}Count`;
         summary[theCount] = await usersDB.find({studentClass: `ss${i}`, role: "student", admitted: true}).count();
     }
